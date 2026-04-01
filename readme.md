@@ -9,5 +9,5 @@ libraries:
 
 start fastapi:
     1) fastapi dev main.py
-    2)
-    3)    
+    2) uvicorn main:app --reload
+    3) from main.py (__main__)  
