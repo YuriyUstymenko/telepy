@@ -6,6 +6,7 @@ activate venv:
 
 libraries:
     pip install "fastapi[all]"
+    pip install aiogram
 
 start fastapi:
     1) fastapi dev main.py
