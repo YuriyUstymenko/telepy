@@ -11,4 +11,9 @@ libraries:
 start fastapi:
     1) fastapi dev main.py
     2) uvicorn main:app --reload
-    3) from main.py (__main__)  
+    3) python main.py (__main__)  
+
+telegram lessons:
+    https://habr.com/ru/articles/953902/
+    https://habr.com/ru/articles/955062/
+    https://habr.com/ru/articles/955986/
