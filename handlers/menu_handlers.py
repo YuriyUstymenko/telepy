@@ -1,17 +1,25 @@
 from aiogram import Router, types
 from aiogram.filters.command import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
+from pymongo.asynchronous.database import AsyncDatabase
 
 router = Router()
 
 keyboard_inline = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text="Button 1", callback_data="btn1"),
-        InlineKeyboardButton(text="Button 2", callback_data="btn2")]
+    [
+        InlineKeyboardButton(text="Button 1", callback_data="btn1"),
+        InlineKeyboardButton(text="Button 2", callback_data="btn2")
+    ]
 ])
 
 keyboard = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton(text="Button 1"), KeyboardButton(text="Button 2")]
+        [
+            KeyboardButton(text="Button 1"), KeyboardButton(text="Button 2")
+        ],
+        [
+            KeyboardButton(text="Back")
+        ]
     ],
     resize_keyboard=True,
     one_time_keyboard=True
@@ -26,7 +34,7 @@ async def cmd_start(message: types.Message):
     await message.reply("KeyboardButton.", reply_markup=keyboard)    
 
 @router.message(Command("menu"))
-async def show_menu(message: types.Message):
+async def show_menu(message: types.Message, db: AsyncDatabase):
     # Используем HTML-разметку для формирования текста
     text = (
         "<b>Меню возможностей:</b>\n\n"
@@ -37,7 +45,11 @@ async def show_menu(message: types.Message):
         "Больше информации о фреймворке вы найдете в "
         "<a href='https://aiogram.dev/'>документации aiogram 3</a>."
     )
-    
+
+    collection = db["test_collection"]
+    document = await collection.find_one({"name": "Alice"})
+    print(f"Found: {document}")
+    text += "\n" + str(document)
     # Отправляем сообщение, обязательно указав parse_mode
     await message.answer(text, parse_mode="HTML")
 
