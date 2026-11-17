@@ -21,6 +21,16 @@ async def handle_sticker(message: types.Message):
     # message.sticker.file_id - можно получить id стикера
     await message.answer("Милый стикер!")
 
+@router.message(F.contact)
+async def handle_text(message: types.Message):
+    contact = message.contact
+    await message.answer(
+        f"Thank you, {contact.first_name}!\n"
+        f"Phone: {contact.phone_number}\n"
+        f"User ID: {contact.user_id}",
+        reply_markup=types.ReplyKeyboardRemove() # Remove the keyboard after use
+    )     
+
 
 # Хэндлер на любой текст (самый общий, должен быть последним)
 @router.message(F.text)

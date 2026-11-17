@@ -22,3 +22,4 @@ venv/
 # IDE/Editor settings
 .vscode/
 .idea/
+.vercel

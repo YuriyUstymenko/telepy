@@ -5,18 +5,20 @@ from handlers import basic_handlers, menu_handlers
 import uvicorn
 import asyncio
 import logging
+import os
 
 from aiogram import Bot, Dispatcher, types, Router
 from aiogram.filters.command import Command
 from aiogram.types import BotCommand, MenuButtonCommands
-
+from dotenv import load_dotenv
 from pymongo import AsyncMongoClient
 
-# ВАЖНО! Вставьте сюда ваш токен, полученный от @BotFather
-BOT_TOKEN = "8763588561:AAE-rRbIy63Poej57jzNEnRzYBRxdtQIRmY"
+load_dotenv()
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+LOGIN_M = os.getenv("LOGIN_M")
+PASS_M = os.getenv("PASS_M")
 
-# Включаем логирование, чтобы не пропустить важные сообщения
-logging.basicConfig(level=logging.INFO)
+
 
 app = FastAPI()
 
@@ -35,7 +37,7 @@ bot = Bot(token=BOT_TOKEN)
 # Диспетчер
 dp = Dispatcher()
 
-client = AsyncMongoClient("mongodb+srv://test:zaqWSX@cluster0.cdoc0v3.mongodb.net/?appName=Cluster0")
+client = AsyncMongoClient(f"mongodb+srv://{LOGIN_M}:{PASS_M}@cluster0.cdoc0v3.mongodb.net/?appName=Cluster0")
 db = client["test_database"]
 
 
@@ -55,7 +57,9 @@ async def set_menu_button(bot: Bot):
     # Сначала регистрируем сами команды
     await bot.set_my_commands([
         BotCommand(command="start", description="Запустить бота"),
-        BotCommand(command="help", description="Помощь")
+        # BotCommand(command="profile", description="👤 Профиль"),
+        # BotCommand(command="catalog", description="🛍 Каталог"),
+        BotCommand(command="help", description="❓ Помощь")        
     ])
     
     # Затем устанавливаем кнопку меню на открытие этого списка
@@ -86,5 +90,10 @@ async def main():
     dp.include_router(basic_handlers.router)    
     results = await asyncio.gather(delete_webhook(), start_polling(), start_uvicorn(), set_menu_button(bot=bot))
 
-if __name__ == "__main__":    
-    asyncio.run(main())
+if __name__ == "__main__":   
+    # Включаем логирование, чтобы не пропустить важные сообщения
+    logging.basicConfig(level=logging.INFO) 
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print('Exit') 
